@@ -25,7 +25,8 @@ object Main {
   @main def hello(): Unit =
 
 
-
+    val maxHeapSize = Runtime.getRuntime.maxMemory() / (1024 * 1024)
+    println(s"Max Heap Size (MB): $maxHeapSize")
 
     val filePath = "C:\\Users\\DELL\\Downloads\\Verdict.txt"
 
@@ -35,24 +36,24 @@ object Main {
     // Reading the file content into a String
     val fileContent: String = Files.readString(Paths.get(filePath))
  //   val deepLearningTest = new DeepLearningTest(fileContent, encoding, 4, 1)
-    val txt = "This is a sample text for embedding layer testing."
+    val txt = "This is a sample text for embedding layer testing.Model should run correctly"
 
       // Define sliding window parameters
       val maxLength: Int = 10
       val stride: Int = 1
 
       // Instantiate the DeepLearningTest class
-      val deepLearningTest = new DeepLearningTest(txt, encoding, maxLength, stride)
+     //val deepLearningTest = new DeepLearningTest(fileContent, encoding, maxLength, stride)
 
       // Initialize data preparation and model configuration
-      deepLearningTest.initialize()
+    /*  deepLearningTest.initialize()
 
       // Train the model
       deepLearningTest.trainModel()
 
       // (Optional) Print learned embeddings
       deepLearningTest.printWordTokenEmbedding()
-      deepLearningTest.exportEmbeddingsToCSV("D:\\IdeaProjects\\ScalaRest\\src\\main\\resources\\output.csv")
+      deepLearningTest.exportEmbeddingsToCSV("D:\\IdeaProjects\\ScalaRest\\src\\main\\resources\\output.csv")*/
    // println(fileContent)
 
    // val encoded = encoding.encode("Hello babe")
