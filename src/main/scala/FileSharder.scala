@@ -65,21 +65,30 @@ object FileSharder {
     }
   }
 
+
   /**
-   * Shards an input text file into smaller files based on the number of lines per shard.
-   * Each shard contains preprocessed sentences.
+   * Shards a text file into multiple smaller files based on the number of lines per shard.
    *
-   * @param inputPath Path to the input text file.
-   * @param outputDir Path to the directory where shards will be stored.
-   * @param linesPerShard Number of lines (sentences) per shard.
+   * @param inputPath         Path to the input file.
+   * @param outputDir         Directory where shard files will be stored.
+   * @param linesPerShard     Number of lines per shard.
+   * @param skipPreprocessing If true, skips splitting into sentences and preprocessing.
    */
-  def shardByLines(inputPath: String, outputDir: String, linesPerShard: Int): Unit = {
+  def shardByLines(
+                    inputPath: String,
+                    outputDir: String,
+                    linesPerShard: Int,
+                    skipPreprocessing: Boolean = false
+                  ): Unit = {
     require(linesPerShard > 0, "linesPerShard must be a positive integer.")
 
     val inputFile = new File(inputPath)
     if (!inputFile.exists()) {
       throw new IllegalArgumentException(s"Input file does not exist: $inputPath")
     }
+
+    // Ensure output directory exists
+    ensureOutputDirectoryExists(outputDir)
 
     // Delete existing shards before proceeding
     deleteExistingShards(outputDir)
@@ -91,25 +100,32 @@ object FileSharder {
         var lineCount = 0
         var writer: BufferedWriter = new BufferedWriter(new FileWriter(new File(outputDir, f"shard_$shardIndex%05d.txt")))
 
-        for (line <- source.getLines()) {
-          val sentences = splitIntoSentences(line)
-
-          for (sentence <- sentences) {
-            val preprocessed = preprocessSentence(sentence)
-            if (preprocessed.nonEmpty) { // Ensure sentence is not empty after preprocessing
-              writer.write(preprocessed)
-              writer.newLine()
-              lineCount += 1
-
-              if (lineCount >= linesPerShard) {
-                writer.close()
-                shardIndex += 1
-                lineCount = 0
-                writer = new BufferedWriter(new FileWriter(new File(outputDir, f"shard_$shardIndex%05d.txt")))
-              }
+        // Process each line using functional constructs
+        source.getLines()
+          .flatMap { line =>
+            if (!skipPreprocessing) {
+              // Split line into sentences and preprocess each sentence
+              splitIntoSentences(line)
+                .map(preprocessSentence)
+                .filter(_.nonEmpty)
+            } else {
+              // Treat each line as a token
+              Some(line.trim).filter(_.nonEmpty)
             }
           }
-        }
+          .foreach { token =>
+            writer.write(token)
+            writer.newLine()
+            lineCount += 1
+
+            // Check if current shard reached the limit
+            if (lineCount >= linesPerShard) {
+              writer.close()
+              shardIndex += 1
+              lineCount = 0
+              writer = new BufferedWriter(new FileWriter(new File(outputDir, f"shard_$shardIndex%05d.txt")))
+            }
+          }
 
         writer.close()
       } finally {
@@ -120,8 +136,10 @@ object FileSharder {
         println(s"Successfully created shards in directory: $outputDir")
       case Failure(exception) =>
         println(s"An error occurred during sharding: ${exception.getMessage}")
+        exception.printStackTrace()
     }
   }
+
 
   /**
    * Ensures that the directory for the given file path exists.
@@ -239,13 +257,14 @@ object FileSharder {
       System.exit(1)
     }
 
-    val Array(inputPath, outputDir, linesStr) = args
+   /* val Array(inputPath, outputDir, linesStr) = args
     val linesPerShard = Try(linesStr.toInt).getOrElse {
       println("linesPerShard must be a valid integer.")
       System.exit(1)
       0 // Unreachable
-    }
+    }*/
 
-    shardByLines(inputPath, outputDir, linesPerShard)
+    shardByLines("D:\\IdeaProjects\\ScalaRest\\src\\main\\resources\\mapreduce\\input\\tokenids.txt",
+      "D:\\IdeaProjects\\ScalaRest\\src\\main\\resources\\mapreduce\\input", 200,true)
   }
 }
