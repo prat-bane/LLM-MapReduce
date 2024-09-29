@@ -11,7 +11,11 @@ import java.util
 import scala.jdk.CollectionConverters.*
 import com.knuddels.jtokkit.Encodings
 import com.knuddels.jtokkit.api.Encoding
+
 import java.io.IOException
+import scala.collection.mutable.ArrayBuffer
+import org.apache.hadoop.fs.{FileSystem, Path}
+import org.apache.hadoop.conf.Configuration
 
 
 object TokenizeMapReduce {
@@ -29,11 +33,14 @@ object TokenizeMapReduce {
 
       val tokens = wordPattern.findAllIn(line)
       tokens.foreach { token =>
-        val tokenId = jtokkitEncoding.encode(token).get(0);
-        wordTokenPair.set(s"$token $tokenId")
+        val tokenArray = jtokkitEncoding.encode(token).toArray
+        val tokenIds = tokenArray.mkString("[", " ", "]");
+        wordTokenPair.set(s"$token $tokenIds")
         output.collect(wordTokenPair, one)
       }
-    
+
+
+
    class Reduce extends MapReduceBase with Reducer[Text, IntWritable, Text, IntWritable]:
       override def reduce(key: Text, values: util.Iterator[IntWritable], output: OutputCollector[Text, IntWritable], reporter: Reporter): Unit =
         val sum = values.asScala.reduce((valueOne, valueTwo) => new IntWritable(valueOne.get() + valueTwo.get()))
@@ -43,8 +50,8 @@ object TokenizeMapReduce {
       val conf: JobConf = new JobConf(this.getClass)
       conf.setJobName("WordCount")
       conf.set("fs.defaultFS", "local")
-      conf.set("mapreduce.job.maps", "1")
-      conf.set("mapreduce.job.reduces", "1")
+      conf.set("mapreduce.job.maps", "3")
+      conf.set("mapreduce.job.reduces", "2")
       conf.setOutputKeyClass(classOf[Text])
       conf.setOutputValueClass(classOf[IntWritable])
       conf.setMapperClass(classOf[Map])
@@ -55,5 +62,20 @@ object TokenizeMapReduce {
       FileInputFormat.setInputPaths(conf, new Path(inputPath))
       FileOutputFormat.setOutputPath(conf, new Path(outputPath))
       JobClient.runJob(conf)
+      try {
+        FileSharder.consolidateTokenIds("D:\\IdeaProjects\\ScalaRest\\src\\main\\resources\\mapreduce\\output",
+          "D:\\IdeaProjects\\ScalaRest\\src\\main\\resources\\mapreduce\\input\\tokenids.txt")
+      } catch {
+        case e: Exception =>
+          println(s"An error occurred: ${e.getMessage}")
+          e.printStackTrace()
+          sys.exit(1)
+      }
+
+
+
+
 
 }
+
+
