@@ -30,6 +30,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
       job.setMapOutputValueClass(classOf[Text])
       job.setOutputKeyClass(classOf[Text])
       job.setOutputValueClass(classOf[Text])
+      job.setNumReduceTasks(3)
 
       job.setInputFormatClass(classOf[WholeFileInputFormat])
 

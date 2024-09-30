@@ -1,5 +1,7 @@
 package mapreduce
 
+import com.knuddels.jtokkit.Encodings
+import com.knuddels.jtokkit.api.{Encoding, IntArrayList, ModelType}
 import org.apache.hadoop.io.*
 import org.apache.hadoop.mapreduce.*
 
@@ -22,6 +24,10 @@ class TokenEmbeddingMapper extends Mapper[Text, Text, Text, Text] {
 
   // Initialize the logger
   private val logger = Logger.getLogger(classOf[TokenEmbeddingMapper])
+
+  val registry = Encodings.newDefaultEncodingRegistry
+  // Initialize tokenizer
+  val tokenizer: Encoding = registry.getEncodingForModel(ModelType.GPT_4)
 
   override def map(
                     key: Text,
@@ -74,8 +80,12 @@ class TokenEmbeddingMapper extends Mapper[Text, Text, Text, Text] {
         uniqueTokens.foreach { token =>
           val index = tokenToIndex(token)
           val embeddingVector = embeddings(index)
-          val embeddingString = embeddingVector.toDoubleVector.mkString(" ")
-          context.write(new Text(token), new Text(embeddingString))
+          val embeddingString = embeddingVector.toDoubleVector.mkString(",")
+          val tokenList=IntArrayList(1)
+          tokenList.add(token.toInt)
+          val word= tokenizer.decode(tokenList)
+          val keyOut = s"$word $token"
+          context.write(new Text(keyOut), new Text(embeddingString))
         }
         logger.info("Emitted embeddings for all tokens")
       } else {

@@ -21,4 +21,5 @@ libraryDependencies ++= Seq(
   "org.deeplearning4j" % "deeplearning4j-core" % "1.0.0-beta7",
   "org.nd4j" % "nd4j-native-platform" % "1.0.0-beta7",
   "org.datavec" % "datavec-api" % "1.0.0-beta7",
+  "log4j" % "log4j" % "1.2.17"
 )

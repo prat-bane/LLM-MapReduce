@@ -264,7 +264,9 @@ object FileSharder {
       0 // Unreachable
     }*/
 
-    shardByLines("D:\\IdeaProjects\\ScalaRest\\src\\main\\resources\\mapreduce\\input\\tokenids.txt",
-      "D:\\IdeaProjects\\ScalaRest\\src\\main\\resources\\mapreduce\\input", 200,true)
+    /*shardByLines("D:\\IdeaProjects\\ScalaRest\\src\\main\\resources\\mapreduce\\input\\tokenids.txt",
+      "D:\\IdeaProjects\\ScalaRest\\src\\main\\resources\\mapreduce\\input", 200,true)*/
+    shardByLines("D:\\IdeaProjects\\ScalaRest\\src\\main\\resources\\mapreduce\\embeddings\\output\\part-r-00000",
+      "D:\\IdeaProjects\\ScalaRest\\src\\main\\resources\\mapreduce\\similarity\\shards",200,true)
   }
 }

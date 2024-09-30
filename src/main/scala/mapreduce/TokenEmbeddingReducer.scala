@@ -4,7 +4,6 @@ import org.apache.hadoop.io._
 import org.apache.hadoop.mapreduce._
 import scala.collection.JavaConverters._
 import org.nd4j.linalg.factory.Nd4j
-import org.nd4j.linalg.api.ndarray.INDArray
 import org.apache.log4j.Logger
 
 class TokenEmbeddingReducer extends Reducer[Text, Text, Text, Text] {
@@ -20,8 +19,9 @@ class TokenEmbeddingReducer extends Reducer[Text, Text, Text, Text] {
     try {
       logger.info(s"Reducing embeddings for token: ${key.toString}")
 
+
       val embeddings = values.asScala.map { value =>
-        val vector = value.toString.trim.split("\\s+").map(_.toDouble)
+        val vector = value.toString.trim.split(",").map(_.toDouble)
         Nd4j.create(vector)
       }.toSeq
 
@@ -32,7 +32,7 @@ class TokenEmbeddingReducer extends Reducer[Text, Text, Text, Text] {
         // Average embeddings
         val avgEmbedding = sumEmbedding.div(embeddings.size.toDouble)
 
-        val embeddingString = avgEmbedding.toDoubleVector.mkString(" ")
+        val embeddingString = avgEmbedding.toDoubleVector.mkString(",")
         context.write(key, new Text(embeddingString))
         logger.info(s"Emitted averaged embedding for token: ${key.toString}")
       } else {
