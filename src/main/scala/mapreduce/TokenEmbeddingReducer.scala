@@ -1,7 +1,8 @@
 package mapreduce
 
-import org.apache.hadoop.io._
-import org.apache.hadoop.mapreduce._
+import org.apache.hadoop.io.Text
+import org.apache.hadoop.mapreduce.Reducer
+
 import scala.collection.JavaConverters._
 import org.nd4j.linalg.factory.Nd4j
 import org.apache.log4j.Logger

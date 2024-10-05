@@ -17,7 +17,6 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
         System.exit(-1)
       }
 
-      val Array(inputPath, outputPath) = args
 
       val conf = new Configuration()
 
@@ -34,8 +33,8 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 
       job.setInputFormatClass(classOf[WholeFileInputFormat])
 
-      FileInputFormat.addInputPath(job, new Path(inputPath))
-      FileOutputFormat.setOutputPath(job, new Path(outputPath))
+      FileInputFormat.addInputPath(job, new Path(args(0)))
+      FileOutputFormat.setOutputPath(job, new Path(args(1)))
 
       val success = job.waitForCompletion(true)
       System.exit(if (success) 0 else 1)

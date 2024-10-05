@@ -1,24 +1,29 @@
 package mapreduce
 
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.fs.Path
+import org.apache.hadoop.fs.{FileSystem, LocatedFileStatus, Path, RemoteIterator}
 import org.apache.hadoop.io.Text
 import org.apache.hadoop.mapreduce.Job
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
+import org.slf4j.{LoggerFactory}
 
-import java.io.File
+import java.net.URI
 
 object CosineSimilarityDriver {
+  private val logger = LoggerFactory.getLogger(CosineSimilarityDriver.getClass)
   def main(args: Array[String]): Unit = {
-   /* if (args.length != 3) {
-      System.err.println("Usage: CosineSimilarityDriver <input path> <output path> <cache file path>")
+    if (args.length != 3) {
+      logger.error("Invalid arguments. Usage: CosineSimilarityDriver <input path> <output path> <cache file path>")
       System.exit(-1)
     }
-*/
+
+
     val conf = new Configuration()
     val job = Job.getInstance(conf, "Cosine Similarity Computation")
     job.setJarByClass(CosineSimilarityDriver.getClass)
+    logger.info("Job instance created for Cosine Similarity Computation.")
+
 
     // Set Mapper and Reducer classes
     job.setMapperClass(classOf[CosineSimilarityMapper])
@@ -29,24 +34,16 @@ object CosineSimilarityDriver {
     job.setOutputValueClass(classOf[Text])
 
     // Set input and output paths using FileInputFormat and FileOutputFormat
-    FileInputFormat.addInputPath(job, new Path("D:\\IdeaProjects\\ScalaRest\\src\\main\\resources\\mapreduce\\embeddings\\output"))
-    FileOutputFormat.setOutputPath(job, new Path("D:\\IdeaProjects\\ScalaRest\\src\\main\\resources\\mapreduce\\embeddings\\similarity\\output"))
-   val relativePath = "D:\\IdeaProjects\\ScalaRest\\src\\main\\resources\\mapreduce\\test.txt"
+    FileInputFormat.addInputPath(job, new Path(args(0)))
+    FileOutputFormat.setOutputPath(job, new Path(args(1)))
 
-   // Create a File object
-   val file = new File(relativePath)
+    //val path = findFilePath("hdfs://localhost:9000","/input/cosine","embeddings.txt")
 
-   // Get the absolute path
-   val absolutePath = file.getAbsolutePath
 
-   println(s"Absolute Path: $absolutePath")
 
-   // Get the absolute URI
-   val absoluteURI = file.toURI
-
-   println(s"Absolute URI: ${absoluteURI.toString}")
-    // Add the all_embeddings.txt file to the Distributed Cache
-    job.addCacheFile(absoluteURI)
+    // Adding the all_embeddings.txt file to the Distributed Cache
+    job.addCacheFile(new Path(args(2)).toUri)
+    logger.info(s"Cache file has been added to the Distributed Cache.")
 
     // Set number of reducers (adjust based on dataset size and cluster resources)
     job.setNumReduceTasks(4) // Example: using 4 reducers for scalability
@@ -54,4 +51,5 @@ object CosineSimilarityDriver {
     // Exit after completion
     System.exit(if (job.waitForCompletion(true)) 0 else 1)
   }
+
 }

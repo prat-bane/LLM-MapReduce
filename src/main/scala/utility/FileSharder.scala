@@ -1,7 +1,6 @@
-import java.io.{BufferedWriter, File, FileWriter, PrintWriter}
-import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.fs.{FileSystem, Path}
+package utility
 
+import java.io.{BufferedWriter, File, FileWriter}
 import scala.io.Source
 import scala.util.matching.Regex
 import scala.util.{Failure, Success, Try}
@@ -172,7 +171,7 @@ object FileSharder {
     ensureOutputDirectoryExists(outputFilePath)
 
     // Define regex patterns
-    val partFileRegex: Regex = """^part-\d{5}$""".r
+    val partFileRegex: Regex = """^part-r-\d{5}$""".r
     val tokenExtractRegex: Regex = """\[(\d+(?:\s+\d+)*)\]""".r
 
     // Initialize the output file with a BufferedWriter
@@ -210,8 +209,6 @@ object FileSharder {
                   } // Append tokens with a space
                 case None =>
                 // Line does not contain tokens within brackets; skip or log
-                // Uncomment the line below to log skipped lines
-                // println(s"No tokens found in line: $line")
               }
             }
           } catch {
@@ -256,17 +253,20 @@ object FileSharder {
           |""".stripMargin)
       System.exit(1)
     }
-
+    shardByLines("D:\\IdeaProjects\\ScalaRest\\src\\main\\resources\\mapreduce\\output\\tokenids.txt",
+      "D:\\IdeaProjects\\ScalaRest\\src\\main\\resources\\mapreduce\\embeddings\\input\\tokens",
+      100,true)
    /* val Array(inputPath, outputDir, linesStr) = args
     val linesPerShard = Try(linesStr.toInt).getOrElse {
       println("linesPerShard must be a valid integer.")
       System.exit(1)
       0 // Unreachable
     }*/
-
+   /* shardByLines("D:\\input.txt","D:\\IdeaProjects\\ScalaRest\\src\\main\\resources\\mapreduce\\text\\shards\\",
+      100,false)*/
     /*shardByLines("D:\\IdeaProjects\\ScalaRest\\src\\main\\resources\\mapreduce\\input\\tokenids.txt",
       "D:\\IdeaProjects\\ScalaRest\\src\\main\\resources\\mapreduce\\input", 200,true)*/
-    shardByLines("D:\\IdeaProjects\\ScalaRest\\src\\main\\resources\\mapreduce\\embeddings\\output\\part-r-00000",
-      "D:\\IdeaProjects\\ScalaRest\\src\\main\\resources\\mapreduce\\similarity\\shards",200,true)
+    /*shardByLines("D:\\IdeaProjects\\ScalaRest\\src\\main\\resources\\mapreduce\\embeddings\\output\\part-r-00000",
+      "D:\\IdeaProjects\\ScalaRest\\src\\main\\resources\\mapreduce\\similarity\\shards",200,true)*/
   }
 }
