@@ -26,6 +26,8 @@ The goal of this project is to create a **Large Language Model (LLM) Encoder** u
 
 ## Getting Started
 
+#Youtube video Link: https://youtu.be/QWJDm6ITcMg
+
 ### Prerequisites
 
 - **AWS Account**: With permissions to create and manage EMR clusters.
@@ -38,5 +40,4 @@ The goal of this project is to create a **Large Language Model (LLM) Encoder** u
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/yourusername/llm-encoder-aws-emr.git
-   cd llm-encoder-aws-emr
+   git clone [https://github.com/yo](https://github.com/prat-bane/LLM-MapReduce)
