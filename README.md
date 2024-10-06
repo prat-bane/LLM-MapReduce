@@ -7,7 +7,16 @@
 
 ## Overview
 
-The goal of this project is to create a **Large Language Model (LLM) Encoder** using parallel distributed computations on **AWS Elastic MapReduce (EMR)**. This project involves training an LLM encoder by processing large datasets efficiently in a distributed environment.
+The goal of this project is to create a **Large Language Model (LLM) Encoder** using parallel distributed computations on **AWS Elastic MapReduce (EMR)**. This project involves training an LLM encoder by processing large datasets efficiently in a distributed environment. 
+
+## Setup
+
+### Prerequisites
+
+- Scala (version 2.13.12)
+- Apache Hadoop (version 3.3.4)
+- SBT (Scala Build Tool, version 1.10.1)
+- Java JDK (version 1.8 )
 
 ## Project Workflow
 
