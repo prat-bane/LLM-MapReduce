@@ -3,7 +3,7 @@
 ### Author : Pratyay Banerjee
 ### Email : pbane8@uic.edu
 
-### Youtube video : [https://youtu.be/QWJDm6ITcMghttps://youtube/QWJDm6ITcMg](https://youtu.be/QWJDm6ITcMg)
+### Youtube video : [https://youtu.be/QWJDm6ITcMg](https://youtu.be/QWJDm6ITcMg)
 
 ## Overview
 
