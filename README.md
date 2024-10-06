@@ -1,19 +1,29 @@
-Large Language Model (Using Apache Hadoop)
-
-Author: Pratyay Banerjee
-email: pbane8@uic.edu
-
 # Large Language Model Encoder on AWS EMR
+
+### Author : Pratyay Banerjee
+### Email : pbane8@uic.edu
+
+### Youtube video : [https://youtu.be/QWJDm6ITcMg](https://youtu.be/QWJDm6ITcMg)
 
 ## Overview
 
-The goal of this project is to create a **Large Language Model (LLM) Encoder** using parallel distributed computations on **AWS Elastic MapReduce (EMR)**. This project involves training an LLM encoder by processing large datasets efficiently in a distributed environment.
+The goal of this project is to create a **Large Language Model (LLM) Encoder** using parallel distributed computations on **AWS Elastic MapReduce (EMR)**. This project involves training an LLM encoder by processing large datasets efficiently in a distributed environment. 
+
+## Setup
+
+### Prerequisites
+
+- Scala (version 2.13.12)
+- Apache Hadoop (version 3.3.4)
+- SBT (Scala Build Tool, version 1.10.1)
+- Java JDK (version 1.8 )
 
 ## Project Workflow
 
 1. **Data Sharding and Tokenization**
    - **Sharding**: The input text data is divided into smaller, manageable chunks to facilitate parallel processing across the EMR cluster.
    - **Tokenization**: Each shard is tokenized using [Jtokkit](https://github.com/nocduro/jtokkit), an efficient tokenizer for large-scale text data.
+   - 
 
 2. **Token Embedding Generation**
    - **MapReduce Job**: In the next MapReduce job, we generate embeddings for the tokens consolidated from the previous step.
