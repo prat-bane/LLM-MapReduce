@@ -112,3 +112,22 @@ app{
 }
 ```
 
+### General Configuration
+
+| **Variable**      | **Default Value** | **Description**                                                                                                                                                                 |
+|-------------------|--------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `window-size`     | `8`                | **Purpose:** Defines the size of the sliding window used during tokenization or context windowing. <br> **Impact:** Determines how many tokens are considered together, affecting contextual understanding and computational load. A larger window size captures more context but requires more resources. |
+| `stride`          | `2`                | **Purpose:** Specifies the step size by which the sliding window moves across the dataset. <br> **Impact:** Controls the overlap between windows. Smaller strides increase coverage and redundancy, enhancing learning but increasing processing time. |
+| `embedding-size`  | `100`              | **Purpose:** Sets the dimensionality of the vector embeddings generated for each token. <br> **Impact:** Higher embedding sizes capture more nuanced semantic relationships but demand more memory and computational power. Balances representation richness with resource utilization. |
+| `lstm-layer-size` | `128`              | **Purpose:** Determines the number of units (neurons) in each Long Short-Term Memory (LSTM) layer of the neural network. <br> **Impact:** Affects the model's capacity to learn complex patterns and dependencies in the data. Larger sizes enhance learning capability but increase the risk of overfitting and computational requirements. |
+| `learning-rate`   | `0.001`            | **Purpose:** Controls the step size for updating model parameters during training. <br> **Impact:** Balances convergence speed and training stability. A learning rate that's too high can cause overshooting of minima, while too low a rate can result in slow convergence. Finding an optimal learning rate is essential for effective training. |
+| `epochs`          | `500`              | **Purpose:** Specifies the number of complete passes through the entire training dataset. <br> **Impact:** More epochs allow the model to learn more from the data, potentially improving accuracy. However, excessive epochs can lead to overfitting, where the model performs well on training data but poorly on unseen data. |
+| `batch-size`      | `32`               | **Purpose:** Determines the number of samples processed before updating the model's internal parameters. <br> **Impact:** Affects training stability and computational efficiency. Larger batch sizes make better use of parallel hardware (e.g., GPUs) but require more memory. Optimal batch sizes balance memory usage with the quality of gradient estimates. |
+
+### Cosine Similarity Configuration
+
+| **Variable**                 | **Default Value** | **Description**                                                                                                                                                         |
+|------------------------------|-------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `cosine-similarity.topN`     | `5`               | **Purpose:** Specifies the number of top semantically similar words to retain for each target word based on cosine similarity scores. <br> **Impact:** Determines the breadth of similarity results. Higher values provide more related words but increase computational load during similarity calculations. Ideal for applications requiring a comprehensive set of related terms. |
+
+
