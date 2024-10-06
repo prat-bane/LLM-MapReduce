@@ -18,11 +18,8 @@ class TokenizerReducer extends Reducer[LongWritable, Text, NullWritable, Text] {
     val position = key.get()
     values.asScala.foreach { value =>
       val word = value.toString
-      // Tokenize the word (e.g., split into characters)
       val tokenArray = jtokkitEncoding.encode(word).toArray
       val tokenIds = tokenArray.mkString("[", " ", "]")
-      //val tokensStr = tokens.mkString(",")
-      // Construct the output line
       val outputLine = s"${position}_${word}\t${tokenIds}"
       context.write(NullWritable.get(), new Text(outputLine))
     }

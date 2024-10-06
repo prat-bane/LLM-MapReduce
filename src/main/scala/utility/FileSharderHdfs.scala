@@ -322,14 +322,7 @@ object FileSharderHdfs {
    */
   def main(args: Array[String]): Unit = {
     if (args.length != 4) {
-      println(
-        """
-          |Usage:
-          |  FileSharder <inputFilePath> <outputDirPath> <linesPerShard> <skipPreprocessing>
-          |
-          |Example:
-          |  FileSharder hdfs:///path/to/input.txt hdfs:///path/to/output 1000 false
-          |""".stripMargin)
+
       System.exit(1)
     }
 

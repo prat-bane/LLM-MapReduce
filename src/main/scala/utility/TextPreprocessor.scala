@@ -56,7 +56,6 @@ object TextPreprocessor {
 
   def main(args: Array[String]): Unit = {
     if (args.length != 3) {
-      println("Usage: TextPreprocessor <input path> <output directory> <lines per shard>")
       System.exit(1)
     }
 

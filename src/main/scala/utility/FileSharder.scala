@@ -242,17 +242,7 @@ object FileSharder {
    *             args(2): Number of lines per shard
    */
   def main(args: Array[String]): Unit = {
-    /*if (args.length != 3) {
-      println(
-        """
-          |Usage:
-          |  FileSharder <inputFilePath> <outputDirPath> <linesPerShard>
-          |
-          |Example:
-          |  FileSharder /path/to/input.txt /path/to/output 1000
-          |""".stripMargin)
-      System.exit(1)
-    }*/
+
     shardByLines("E:\\wikitext_test.txt",
       "E:\\output\\text\\shards",
       1000,false)
