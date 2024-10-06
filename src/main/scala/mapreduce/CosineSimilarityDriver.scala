@@ -37,16 +37,9 @@ object CosineSimilarityDriver {
     FileInputFormat.addInputPath(job, new Path(args(0)))
     FileOutputFormat.setOutputPath(job, new Path(args(1)))
 
-    //val path = findFilePath("hdfs://localhost:9000","/input/cosine","embeddings.txt")
-
-
-
     // Adding the all_embeddings.txt file to the Distributed Cache
     job.addCacheFile(new Path(args(2)).toUri)
     logger.info(s"Cache file has been added to the Distributed Cache.")
-
-    // Set number of reducers (adjust based on dataset size and cluster resources)
-    job.setNumReduceTasks(4) // Example: using 4 reducers for scalability
 
     // Exit after completion
     System.exit(if (job.waitForCompletion(true)) 0 else 1)

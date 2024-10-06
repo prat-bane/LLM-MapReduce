@@ -6,11 +6,16 @@ import org.apache.hadoop.io._
 import org.apache.hadoop.mapreduce.Job
 import org.apache.hadoop.mapreduce.lib.input.{FileInputFormat, TextInputFormat}
 import org.apache.hadoop.mapreduce.lib.output.{FileOutputFormat, TextOutputFormat}
+import org.slf4j.LoggerFactory
 import utility.FileSharderHdfs
 
-import scala.io.Source
+import java.nio.charset.{Charset, CodingErrorAction}
+import scala.io.{BufferedSource, Codec}
+import scala.util.Try
 
 object TokenizerJob {
+
+  private val logger = LoggerFactory.getLogger(this.getClass)
   def main(args: Array[String]): Unit = {
     if (args.length != 6) {
       println("Usage: TokenizerJob <input path> <output path> <number of reducers>")
@@ -59,6 +64,8 @@ object TokenizerJob {
 
     if(success){
       if(job.waitForCompletion(true)) {
+        logger.info("MapReduce job completed successfully.")
+        logger.info("Starting post-processing steps.")
         FileSharderHdfs.consolidateTokenIds(args(1),args(3))
         FileSharderHdfs.shardByLines(args(3),
           args(4),
@@ -70,30 +77,43 @@ object TokenizerJob {
   }
 
   def getMaxPosition(fs: FileSystem, inputPath: Path): Long = {
-    var maxPosition = 0L
-    val statusList = fs.listStatus(inputPath)
-    val files = getAllFiles(statusList)
-
-    for (file <- files) {
-      val stream = fs.open(file)
-      val reader = Source.fromInputStream(stream)
-      for (line <- reader.getLines()) {
-        val splitIndex = line.indexOf('_')
-        if (splitIndex > 0 && splitIndex < line.length - 1) {
-          val positionStr = line.substring(0, splitIndex)
-          try {
-            val position = positionStr.toLong
-            if (position > maxPosition) {
-              maxPosition = position
-            }
-          } catch {
-            case _: NumberFormatException =>
-          }
+    def getAllFiles(statusList: Array[FileStatus]): Array[Path] = {
+      statusList.flatMap { status =>
+        if (status.isDirectory) {
+          getAllFiles(fs.listStatus(status.getPath))
+        } else {
+          Array(status.getPath)
         }
       }
-      reader.close()
     }
-    maxPosition
+
+    val files = getAllFiles(fs.listStatus(inputPath))
+
+    files.map { file =>
+      val stream = fs.open(file)
+      val decoder = Charset.forName("UTF-8").newDecoder()
+      decoder.onMalformedInput(CodingErrorAction.REPLACE)
+      decoder.onUnmappableCharacter(CodingErrorAction.REPLACE)
+      implicit val codec: Codec = Codec(decoder.charset())
+
+      val source = new BufferedSource(stream)(codec)
+      try {
+        source.getLines().foldLeft(0L) { (maxPos, line) =>
+          val splitIndex = line.indexOf('_')
+          if (splitIndex > 0 && splitIndex < line.length - 1) {
+            val positionStr = line.substring(0, splitIndex)
+            Try(positionStr.toLong).toOption match {
+              case Some(pos) => math.max(maxPos, pos)
+              case None => maxPos
+            }
+          } else {
+            maxPos
+          }
+        }
+      } finally {
+        source.close()
+      }
+    }.foldLeft(0L)(math.max)
   }
 
   def getAllFiles(statusList: Array[FileStatus]): Array[Path] = {

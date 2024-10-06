@@ -242,7 +242,7 @@ object FileSharder {
    *             args(2): Number of lines per shard
    */
   def main(args: Array[String]): Unit = {
-    if (args.length != 3) {
+    /*if (args.length != 3) {
       println(
         """
           |Usage:
@@ -252,10 +252,10 @@ object FileSharder {
           |  FileSharder /path/to/input.txt /path/to/output 1000
           |""".stripMargin)
       System.exit(1)
-    }
-    shardByLines("D:\\IdeaProjects\\ScalaRest\\src\\main\\resources\\mapreduce\\output\\tokenids.txt",
-      "D:\\IdeaProjects\\ScalaRest\\src\\main\\resources\\mapreduce\\embeddings\\input\\tokens",
-      100,true)
+    }*/
+    shardByLines("E:\\wikitext_test.txt",
+      "E:\\output\\text\\shards",
+      1000,false)
    /* val Array(inputPath, outputDir, linesStr) = args
     val linesPerShard = Try(linesStr.toInt).getOrElse {
       println("linesPerShard must be a valid integer.")

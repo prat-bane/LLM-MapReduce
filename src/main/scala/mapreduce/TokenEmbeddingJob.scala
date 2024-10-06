@@ -17,25 +17,18 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
         System.exit(-1)
       }
 
-
       val conf = new Configuration()
-
       val job = Job.getInstance(conf, "Token Embedding Job")
       job.setJarByClass(this.getClass)
       job.setMapperClass(classOf[TokenEmbeddingMapper])
       job.setReducerClass(classOf[TokenEmbeddingReducer])
-
       job.setMapOutputKeyClass(classOf[Text])
       job.setMapOutputValueClass(classOf[Text])
       job.setOutputKeyClass(classOf[Text])
       job.setOutputValueClass(classOf[Text])
-      job.setNumReduceTasks(3)
-
       job.setInputFormatClass(classOf[WholeFileInputFormat])
-
       FileInputFormat.addInputPath(job, new Path(args(0)))
       FileOutputFormat.setOutputPath(job, new Path(args(1)))
-
       val success = job.waitForCompletion(true)
       System.exit(if (success) 0 else 1)
     }

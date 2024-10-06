@@ -38,10 +38,9 @@ class TokenEmbeddingMapper extends Mapper[Text, Text, Text, Text] {
       val tokens = lines.map(_.trim).filter(_.nonEmpty).toSeq
       logger.info(s"Total tokens read: ${tokens.length}")
 
-      // Map tokens to indices (considering duplicates)
+      // Map tokens to indices so that we don't get ArrayIndexOutofBoundExceptions
       val uniqueTokens = tokens.distinct
       val tokenToIndex = uniqueTokens.zipWithIndex.toMap
-      //    val indexToToken = tokenToIndex.map(_.swap)
       val vocabSize = uniqueTokens.size
       logger.info(s"Unique tokens: $vocabSize")
 
@@ -49,7 +48,6 @@ class TokenEmbeddingMapper extends Mapper[Text, Text, Text, Text] {
       val tokenIndices = tokens.map(tokenToIndex)
 
       // Generate input-target pairs
-
       val inputTargetPairs = SlidingWindowUtil.generateInputTargetPairs(tokenIndices.toArray, windowSize, stride)
       logger.info(s"Generated ${inputTargetPairs.length} input-target pairs")
       if (inputTargetPairs.nonEmpty) {

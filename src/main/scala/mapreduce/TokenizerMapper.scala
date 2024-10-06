@@ -2,8 +2,10 @@ package mapreduce
 
 import org.apache.hadoop.io._
 import org.apache.hadoop.mapreduce._
+import org.slf4j.LoggerFactory
 
 class TokenizerMapper extends Mapper[LongWritable, Text, LongWritable, Text] {
+  private val logger = LoggerFactory.getLogger(this.getClass)
   override def map(
                     key: LongWritable,
                     value: Text,
@@ -16,10 +18,12 @@ class TokenizerMapper extends Mapper[LongWritable, Text, LongWritable, Text] {
       val word = line.substring(splitIndex + 1)
       try {
         val position = positionStr.toLong
+        logger.debug(s"Emitted key-value pair: ($position, $word)")
         context.write(new LongWritable(position), new Text(word))
+
       } catch {
         case _: NumberFormatException =>
-        // Handle invalid position format if necessary
+          logger.error("Invalid position format in line")
       }
     }
   }

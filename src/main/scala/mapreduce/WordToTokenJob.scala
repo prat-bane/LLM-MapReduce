@@ -50,7 +50,7 @@ object WordToTokenJob {
   // Driver (Main) class
   @throws[Exception]
   def main(args: Array[String]): Unit = {
-    if (args.length != 4) {
+    if (args.length != 2) {
       println("Usage: TokenizeMapReduce <input path> <output path>")
       System.exit(-1)
     }
@@ -63,7 +63,7 @@ object WordToTokenJob {
     job.setMapperClass(classOf[Map])
     job.setCombinerClass(classOf[Reduce]) // Optional combiner
     job.setReducerClass(classOf[Reduce])
-    job.setNumReduceTasks(3)
+  //  job.setNumReduceTasks(3)
 
     job.setOutputKeyClass(classOf[Text])
     job.setOutputValueClass(classOf[IntWritable])
@@ -72,24 +72,9 @@ object WordToTokenJob {
     FileInputFormat.addInputPath(job, new Path(args(0)))
     FileOutputFormat.setOutputPath(job, new Path(args(1)))
 
-     try {
-       if(job.waitForCompletion(true)) {
-          FileSharderHdfs.consolidateTokenIds(args(1),
-          args(2))
-          FileSharderHdfs.shardByLines(args(2),
-            args(3),
-            100,true)
-       } else
-          System.exit(1)
-      } catch {
-        case e: Exception =>
-          println(s"An error occurred: ${e.getMessage}")
-          e.printStackTrace()
-          sys.exit(1)
-      }
 
     // Exit on job completion
-   // System.exit(if (job.waitForCompletion(true)) 0 else 1)
+    System.exit(if (job.waitForCompletion(true)) 0 else 1)
   }
 }
 

@@ -19,8 +19,6 @@ class TokenEmbeddingReducer extends Reducer[Text, Text, Text, Text] {
                      ): Unit = {
     try {
       logger.info(s"Reducing embeddings for token: ${key.toString}")
-
-
       val embeddings = values.asScala.map { value =>
         val vector = value.toString.trim.split(",").map(_.toDouble)
         Nd4j.create(vector)
@@ -29,10 +27,8 @@ class TokenEmbeddingReducer extends Reducer[Text, Text, Text, Text] {
       if (embeddings.nonEmpty) {
         // Sum embeddings
         val sumEmbedding = embeddings.reduce(_.add(_))
-
         // Average embeddings
         val avgEmbedding = sumEmbedding.div(embeddings.size.toDouble)
-
         val embeddingString = avgEmbedding.toDoubleVector.mkString(",")
         context.write(key, new Text(embeddingString))
         logger.info(s"Emitted averaged embedding for token: ${key.toString}")

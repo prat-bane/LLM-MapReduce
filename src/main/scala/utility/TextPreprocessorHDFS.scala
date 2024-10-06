@@ -35,7 +35,7 @@ object TextPreprocessorHDFS {
       writer = new BufferedWriter(new OutputStreamWriter(shardOutputStream, "UTF-8"))
 
       for (line <- linesIterator) {
-        println(s"Processing line ${lineCount + 1} in shard $shardIndex")
+        //println(s"Processing line ${lineCount + 1} in shard $shardIndex")
 
         val words = line.split("\\s+").filter(_.nonEmpty)
 
@@ -49,7 +49,7 @@ object TextPreprocessorHDFS {
 
         // Check if current shard reached the limit
         if (lineCount >= linesPerShard) {
-          println(s"Shard $shardIndex reached $linesPerShard lines. Creating new shard.")
+         // println(s"Shard $shardIndex reached $linesPerShard lines. Creating new shard.")
           writer.close()
           shardIndex += 1
           lineCount = 0

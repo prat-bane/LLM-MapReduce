@@ -54,7 +54,7 @@ object ModelUtil {
     logger.info("Starting model training...")
     val dataSet = new DataSet(inputArray, targetArray)
     val dataSetIterator = new ListDataSetIterator(dataSet.asList(), batchSize) // Batch size from config
-    model.setListeners(new ScoreIterationListener(10))
+    model.setListeners(new ScoreIterationListener(1))
 
     (1 to epochs).foreach { epoch =>
       dataSetIterator.reset()
