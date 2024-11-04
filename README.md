@@ -7,22 +7,14 @@
 
 ## Overview
 
-The LLM Encoder on **AWS EMR** project aims to develop a **Large Language Model (LLM) Encoder** leveraging the power of parallel distributed computations on AWS Elastic MapReduce (EMR). This project efficiently processes vast datasets in a distributed environment to train an LLM encoder that generates vector embeddings. These embeddings facilitate the calculation of cosine similarities, enabling the identification of semantically similar words.
+The application reads token IDs from a text file, generates embeddings, and trains a neural network model using a sliding window approach. It leverages **Apache Spark** for distributed data processing and DL4J for deep learning tasks.
 
 ## Project Workflow
 
 1. **Data Sharding and Tokenization**
    - **Sharding**:
      The input text data is divided into smaller, manageable chunks to facilitate parallel processing across the EMR cluster. For sharding we have created the FileSharder class, which is used to shard by number of lines. We have also created a TextPreprocessor class which is used by the TokenizerJob to preproccess the input text. The TextPreproccesor class concats every word in the input text with its position and creates a shard. Classes used: **FileSharder.scala**,**TextPreprocessor.scala**
-     Example:
-     ```
-     4_Robert
-     5_Boulter
-     6_is
-     7_an
-     8_English
-     9_film
-     ```
+    
    - **Tokenization**: Each shard is tokenized using [Jtokkit](https://github.com/nocduro/jtokkit), an efficient tokenizer for large-scale text data.
      For Tokenization I have created 2 MapReduce jobs, so please don't confused.\
      i)The first **MapReduce** job I have created is the **WordToTokenJob**. It is used to generate  **word token frequency**. This was created just to meet the requirement of the first part of the project(frequency requirement). The output of this MapperReducer is not used in the rest of the project. \
