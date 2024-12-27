@@ -7,7 +7,7 @@
 
 ## Overview
 
-The application reads token IDs from a text file, generates embeddings, and trains a neural network model using a sliding window approach. It leverages **Apache Spark** for distributed data processing and DL4J for deep learning tasks.
+The LLM Encoder on AWS EMR project aims to develop a Large Language Model (LLM) Encoder leveraging the power of parallel distributed computations on AWS Elastic MapReduce (EMR). This project efficiently processes vast datasets in a distributed environment to train an LLM encoder that generates vector embeddings. These embeddings facilitate the calculation of cosine similarities, enabling the identification of semantically similar words.
 
 ## Project Workflow
 
